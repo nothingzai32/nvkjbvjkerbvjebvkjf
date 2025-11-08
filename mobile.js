@@ -1,5 +1,9 @@
 let highestZ = 1;
 
+document.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+}, { passive: false });
+
 class Paper {
   holdingPaper = false;
   touchStartX = 0;
@@ -18,14 +22,12 @@ class Paper {
   rotating = false;
 
   init(paper) {
-    // Prevent default touch actions
-    paper.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
-    
     paper.addEventListener('touchmove', (e) => {
       e.preventDefault();
-      if(!this.rotating) {
-        this.touchMoveX = e.touches[0].clientX;
-        this.touchMoveY = e.touches[0].clientY;
+      if (e.touches.length === 1) {
+        if(!this.rotating) {
+          this.touchMoveX = e.touches[0].clientX;
+          this.touchMoveY = e.touches[0].clientY;
         
         this.velX = this.touchMoveX - this.prevTouchX;
         this.velY = this.touchMoveY - this.prevTouchY;
@@ -57,6 +59,7 @@ class Paper {
     })
 
     paper.addEventListener('touchstart', (e) => {
+      e.preventDefault();
       if(this.holdingPaper) return; 
       this.holdingPaper = true;
       
@@ -67,7 +70,7 @@ class Paper {
       this.touchStartY = e.touches[0].clientY;
       this.prevTouchX = this.touchStartX;
       this.prevTouchY = this.touchStartY;
-    });
+    }, { passive: false });
     paper.addEventListener('touchend', () => {
       this.holdingPaper = false;
       this.rotating = false;
